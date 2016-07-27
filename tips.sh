@@ -4,16 +4,16 @@
 
 BRIDGE=xenbr0
 FORWARD=eth1
-CHECKPOINT=eth5
+CHECKPOINT=eth2
 
-cp xend-config.sxp /etc/xen/
+#cp xend-config.sxp /etc/xen/
 
 modprobe xen-evtchn
 modprobe xen-gntdev
 modprobe xen-gntalloc
 modprobe sch_plug
-/etc/init.d/xencommons start
-/etc/init.d/xend start
+#/etc/init.d/xencommons start
+#/etc/init.d/xend start
 
 # tip 1
 rm -f /var/lib/xen/suspend_*
@@ -21,8 +21,8 @@ rm -f /var/lib/xen/suspend_*
 # tip 2
 xm vcpu-pin 0 0 0
 xm vcpu-pin 0 1 1
-xm vcpu-pin 0 2 2
-xm vcpu-pin 0 3 3
+#xm vcpu-pin 0 2 2
+#xm vcpu-pin 0 3 3
 
 # tip 3
 function bind_irq()
@@ -31,6 +31,7 @@ function bind_irq()
         irq_list=($(grep "$1" /proc/interrupts| awk '{print $1}' | awk -F ':' '{print $1}'))
         irq_num=${#irq_list[@]}
         for ((i = 0; i < irq_num; i++)); do
+				echo "/proc/irq/${irq_list[i]}/smp_affinity"
                 echo $2 >"/proc/irq/${irq_list[i]}/smp_affinity"
         done
 }
